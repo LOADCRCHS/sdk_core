@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ssm.sdk.dao.LocalPromptDao">
+
+<resultMap id="promptMap" type="LocalPromptTO">
+    <id property="id" column="ID"/>
+    <result property="name" column="NAME"/>
+    <result property="value" column="VALUE"/>
+    <result property="languageType" column="LANGUAGE_TYPE"/>
+    <result property="code" column="CODE"/>
+</resultMap>
+
+    <select id="getAllPrompt" resultMap="promptMap">
+        select ID,NAME,VALUE,LANGUAGE_TYPE,CODE from LOCALE_PROMPT
+    </select>
+</mapper>
+    

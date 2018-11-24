@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ssm.sdk.dao.VerCodeDao">
+
+    <insert id="addCode" parameterType="VerCodeTO">
+        insert into USER_NUM_VERIFY(USER_ID,NUM,CODE,CREATED_DATE)
+        values(#{userId},#{mobile},#{code},now())
+    </insert>
+
+    <select id="getCodeByMobile" parameterType="String" resultType="VerCodeTO">
+        select USER_ID userId,NUM mobile,CODE,CREATED_DATE createdDate
+        FROM USER_NUM_VERIFY
+        where NUM=#{mobile}
+    </select>
+
+    <delete id="deleteCodeByMobile" parameterType="String">
+        delete FROM USER_NUM_VERIFY WHERE NUM=#{mobile}
+    </delete>
+</mapper>
+    
