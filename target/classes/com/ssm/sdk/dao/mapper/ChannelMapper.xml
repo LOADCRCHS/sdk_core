@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ssm.sdk.dao.ChannelDao">
+    <resultMap id="channelMap" type="ChannelTO">
+        <id property="id" column="ID"/>
+        <result property="status" column="STATUS"/>
+        <result property="language" column="LANGUAGE_TYPE"/>
+    </resultMap>
+    <select id="getAllChannels" resultMap="channelMap">
+      select ID,STATUS,LANGUAGE_TYPE FROM PROMOTION_CHANNEL
+     </select>
+
+</mapper>
+    

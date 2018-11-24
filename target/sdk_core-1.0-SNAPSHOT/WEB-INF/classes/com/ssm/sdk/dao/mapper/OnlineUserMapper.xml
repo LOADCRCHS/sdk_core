@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ssm.sdk.dao.OnlineUserDao">
+    <resultMap id="onlineUser" type="OnlineUserTO">
+        <result column="TICKET" property="ticket"/>
+        <result column="USER_ID" property="userId"/>
+        <result column="LOGIN_ACCOUNT" property="loginAccount"/>
+        <result column="GAME_ID" property="gameId"/>
+        <result column="GAME_SERVER_ID" property="gameServerId"/>
+        <result column="IP" property="ip"/>
+        <result column="UA" property="ua"/>
+    </resultMap>
+
+    <insert id="addOnlineUser" parameterType="OnlineUserTO">
+        INSERT INTO sdk_online.ONLINE_USER (TICKET, USER_ID, LOGIN_ACCOUNT, GAME_ID, IP, UA, LOGIN_DATE, LAST_ACT)
+        VALUES (#{ticket}, #{userId}, #{loginAccount}, #{gameId}, #{ip}, #{ua}, now(), now())
+    </insert>
+
+    <select id="getOnlineUser" resultMap="onlineUser" parameterType="java.lang.String">
+        SELECT TICKET, USER_ID, LOGIN_ACCOUNT, GAME_ID, GAME_SERVER_ID, IP, UA
+        FROM sdk_online.ONLINE_USER
+        WHERE TICKET = #{ticket}
+          AND LOGOUT_DATE IS NULL
+    </select>
+
+
+    <update id="updateOnlineUser" parameterType="OnlineUserTO">
+        update sdk_online . ONLINE_USER
+        set GAME_SERVER_ID = #{gameServerId},
+            LAST_ACT       = now()
+        where TICKET = #{ticket}
+    </update>
+
+    <delete id="deleteOnlineUser" parameterType="OnlineUserTO">
+        DELETE
+        FROM sdk_online.ONLINE_USER
+        WHERE USER_ID = #{userId}
+          AND GAME_ID = #{gameId}
+    </delete>
+
+    <update id="updateLogoutDate" parameterType="java.lang.String">
+        UPDATE sdk_online . ONLINE_USER
+        SET LOGOUT_DATE = now()
+        WHERE TICKET = #{ticket}
+    </update>
+</mapper>

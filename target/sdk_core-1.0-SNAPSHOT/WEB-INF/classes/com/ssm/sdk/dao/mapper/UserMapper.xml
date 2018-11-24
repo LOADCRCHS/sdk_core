@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ssm.sdk.dao.UserDao">
+
+    <select id="getUserIdByNum" parameterType="String" resultType="int">
+        select USER_ID
+        from USER_NUM
+        where NUM = #{num}
+    </select>
+    <select id="getUserIdByName" parameterType="String" resultType="int">
+        select USER_ID
+        from USER_NAME
+        where NAME = #{name}
+    </select>
+
+    <insert id="addUser" parameterType="UserTO" useGeneratedKeys="true" keyProperty="id">
+        insert into USER (NAME, EMAIL, NUM, PASSWORD, NICKNAME, CHANNEL_ID, REGIST_DATE, USER_TYPE)
+        values (#{name}, #{email}, #{num}, #{password}, #{nickname}, #{channelId}, now(), #{userType})
+    </insert>
+
+    <insert id="addUserDynamic" parameterType="int">
+        insert into USER_DYNAMIC (USER_ID)
+        values (#{userId})
+    </insert>
+
+    <insert id="addUserName" parameterType="UserTO">
+        insert into USER_NAME (NAME, USER_ID)
+        values (#{name}, #{id})
+    </insert>
+
+    <insert id="addUserMobile" parameterType="UserTO">
+        insert into USER_NUM (NUM, USER_ID)
+        values (#{num}, #{id})
+    </insert>
+
+    <update id="updateNameAndPassword" parameterType="UserTO">
+        update USER
+        set NAME      = #{name},
+            PASSWORD  = #{password},
+            USER_TYPE = 1
+        where ID = #{id}
+          and USER_TYPE = 0
+    </update>
+
+    <update id="updateNumAndPassword" parameterType="UserTO">
+        update USER
+        set NUM       = #{num},
+            PASSWORD  = #{password},
+            USER_TYPE = 1
+        where ID = #{id}
+          and USER_TYPE = 0
+    </update>
+
+    <update id="updatePwdByAccountNum" parameterType="UserTO">
+        update USER
+        set PASSWORD = #{password}
+        where ID = #{id}
+          and NUM = #{num}
+          and USER_TYPE = 1
+    </update>
+
+    <update id="updateNumByAccount" parameterType="UserTO">
+        update USER
+        set NUM = #{num}
+        where ID = #{id}
+          and NAME = #{name}
+          and USER_TYPE = 1
+    </update>
+
+    <update id="updateName" parameterType="java.util.HashMap">
+        update USER_NAME
+        set NAME = #{name}
+        where USER_ID = #{userId}
+    </update>
+    <resultMap id="user" type="UserTO">
+        <id column="ID" property="id"/>
+        <result column="NAME" property="name"/>
+        <result column="EMAIL" property="email"/>
+        <result column="NUM" property="num"/>
+        <result column="PASSWORD" property="password"/>
+        <result column="CHANNEL_ID" property="channelId"/>
+        <result column="USER_TYPE" property="userType"/>
+    </resultMap>
+
+    <select id="getUserById" parameterType="java.lang.Integer" resultMap="user">
+        select ID, NAME, EMAIL, NUM, PASSWORD, CHANNEL_ID, USER_TYPE
+        from USER
+        where ID = #{id}
+          and STATUS = 1
+    </select>
+
+    <select id="getRegistChannel" parameterType="java.util.HashMap" resultType="int">
+        select PROMOTION_CHANNEL_ID
+        from sdk_log.GAME_REGIST_LOG
+        where USER_ID = #{userId}
+          and GAME_ID = #{gameId}
+    </select>
+
+    <insert id="addGameRegistLog" parameterType="java.util.HashMap">
+        insert into sdk_log.GAME_REGIST_LOG (USER_ID, GAME_ID, PROMOTION_CHANNEL_ID, CREATED_DATE)
+        values (#{userId}, #{gameId}, #{channelId}, now())
+    </insert>
+    <insert id="addLoginServerLog" parameterType="LoginServerLogTO">
+        insert into sdk_log.LOGIN_SERVER_LOG
+                (USER_ID, SERVER_ID, GAME_ID,PROMOTION_CHANNEL_ID, MAC_ADDRESS, IMEI, IP, UA, CREATED_DATE, ROLE_ID)
+        values (#{userId}, #{serverId}, #{gameId}, #{channelId}, #{mac}, #{imei}, #{ip}, #{ua}, now(), #{roleId})
+    </insert>
+
+
+    <select id="selectUserRole" parameterType="UserRoleTO" resultType="UserRoleTO">
+        select USER_ID userId, ROLE_ID roleId, GAME_ID gameId, SERVER_ID serverId,
+               ROLE_NAME roleName, ROLE_LEVEL roleLevel, LOGIN_SERVER_TIME loginServerTime,
+               CURRENT_STATUS currentStatus, CREATED_DATE createdDate
+        from user_role where ROLE_ID=#{roleId} and SERVER_ID=#{serverId} and USER_ID=#{userId};
+    </select>
+
+    <insert id="addUserRole" parameterType="UserRoleTO">
+        insert into user_role (USER_ID, ROLE_ID, GAME_ID, SERVER_ID,
+                               ROLE_NAME, ROLE_LEVEL, LOGIN_SERVER_TIME)
+        values (#{userId},#{roleId},#{gameId},#{serverId},
+                #{roleName},#{roleLevel},now());
+    </insert>
+    <update id="updateUserRole" parameterType="UserRoleTO">
+        update user_role
+        set ROLE_NAME =#{roleName},ROLE_LEVEL=#{roleLevel},
+            LOGIN_SERVER_TIME=now()
+        where ROLE_ID =#{roleId} and SERVER_ID=#{serverId}
+          and GAME_ID=#{gameId} and USER_ID=#{userId};
+    </update>
+
+
+    <update id="updateUserDynamic" parameterType="UserDynamicTO">
+        update user_dynamic
+        set  LAST_IP= #{lastIp},
+             LAST_LOGIN_DATE=now(),
+             LAST_UA=#{lastUa}
+        where USER_ID=#{userId};
+    </update>
+
+    <update id="updateUserDynamicServerId" parameterType="UserDynamicTO">
+        update user_dynamic
+        set  LAST_GAME_SERVER_ID=#{lastGameServerId}
+        where USER_ID=#{userId};
+    </update>
+</mapper>
+    

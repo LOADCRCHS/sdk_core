@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ssm.sdk.dao.CPDao">
+
+    <resultMap id="cpMap" type="CPTO">
+        <id property="id" column="ID"/>
+        <result property="secretKey" column="SECRET_KEY"/>
+    </resultMap>
+
+    <select id="getAllCPList" resultMap="cpMap">
+        select ID,SECRET_KEY from CP where STATUS=1
+    </select>
+</mapper>
+    

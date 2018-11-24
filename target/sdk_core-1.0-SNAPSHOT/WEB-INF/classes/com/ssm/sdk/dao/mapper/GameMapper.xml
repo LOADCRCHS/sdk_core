@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ssm.sdk.dao.GameDao">
+
+    <resultMap id="gameMap" type="GameTO">
+        <id property="id" column="ID"/>
+        <result property="cpId" column="CP_ID"/>
+        <result property="seqNum" column="SEQ_NUM"/>
+        <result property="repairStatus" column="REPAIR_STATUS"/>
+        <result property="repairContent" column="REPAIR_CONTENT"/>
+        <result property="version" column="VERSION"/>
+    </resultMap>
+
+    <select id="getAllGameList" resultMap="gameMap">
+        select ID, CP_ID, SEQ_NUM, REPAIR_STATUS, REPAIR_CONTENT, VERSION
+        from GAME
+        where STATUS = 1
+    </select>
+
+    <select id="getServerIdByGameAndSeq" resultType="int" parameterType="Map">
+        select ID
+        from GAME_SERVER
+        where GAME_ID = #{gameId}
+          and SEQ_NUM = #{seqNum}
+          and STATUS = 1
+    </select>
+</mapper>
