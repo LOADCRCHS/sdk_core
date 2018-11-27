@@ -217,14 +217,15 @@ public class UserController {
 
     /**
      * 心跳接口
-     * 事件流(在过滤器中完成)
+     * 在客户端每隔6分钟调用一次，更新用户在线状态
      * @param ticket 登陆票据
      */
     @RequestMapping("user/service/heartbeat.html")
     @ResponseBody
     public ResponseTO heartbeat(String ticket) {
         String decodeTicket = TicketUtil.getDecodeTicket(ticket);
-        return ResponseTOUtil.getSuccessResult(null, decodeTicket);
+        String newTicket = TicketUtil.getEncodeTicket(decodeTicket);
+        return ResponseTOUtil.getSuccessResult(null, newTicket);
     }
 
     /*10.绑定手机*/
